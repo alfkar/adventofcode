@@ -5,8 +5,6 @@
 #include <string>
 using namespace std;
 
-string test = "";
-
 int main()
 {
     vector<string> lines;
