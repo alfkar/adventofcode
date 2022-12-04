@@ -29,15 +29,10 @@ int splitter (string tickets){
     pointer++;
     }
     }
-
-    if(intTickets[0] <= intTickets[2] && intTickets[2]<=intTickets[1] ){
+    if(intTickets[0] <= intTickets[2] && intTickets[1] >= intTickets[3]){
         return 1;
     }
-    if(intTickets[1] >= intTickets[2] && intTickets[1] <= intTickets[3]){
-        return 1;
-    }
-
-    if(intTickets[2] <= intTickets[0] && intTickets[0] <= intTickets[3]){
+    if(intTickets[0] >= intTickets[2] && intTickets[1] <= intTickets[3]){
         return 1;
     }
    
