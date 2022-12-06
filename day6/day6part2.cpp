@@ -4,10 +4,24 @@
 #include <vector>
 #include <string>
 #include <stack>
-#include <list>
+#include <map>
+
 using namespace std;
 
+#define signalLength 14  
 
+bool containsDuplicate(string signal){
+    map<int, char>signalMap;
+    for(char s: signal){
+        if(!signalMap.count(s%32)){
+        signalMap[s%32]=s;
+        }
+        else{
+            return true;
+        }
+    }
+    return false;
+}
 
 int main()
 {   
@@ -16,22 +30,14 @@ int main()
     for (string line; getline(contents, line);){
         lines.push_back(line);
     }
-    
-    for(int i = 0; i < lines[0].size()-14; i++){
-        bool signal = false;
 
-        for(int j = i; j < i+14; j++){
-            for(int k = j+1; k<i+14; k++){
-                if(lines[0][j] == lines[0][k]){
-                    signal = true;
-                }
-            }
-
-        }
-        if(!signal){
-            cout<<i+14<<"\n";
+    for(int i = 0; i < lines[0].size()-signalLength; i++){
+        string signal = lines[0].substr(i,signalLength);
+        if(!containsDuplicate(signal)){
+            cout<<i+signalLength;
             break;
         }
+        
 
     }
 
