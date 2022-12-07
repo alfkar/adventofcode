@@ -26,20 +26,17 @@ using namespace std;
     - d.ext (file, size=5626152)
     - k (file, size=7214296)
 */
-struct node{
-    int mySize;
-    string myName;
-    struct node *parent;
-    vector<node> children;
+
+
+class Node{
+    public: 
+        int myValue;
+        string myName;
+        Node *parent;
+        vector<Node> children;
 };
 
-struct node *newNode(int size, string name){
-    struct node *temp = new node;
-    temp->mySize = size;
-    temp->myName = name;
-    temp->parent = NULL;
-    return temp;
-}
+
 
 int readInt (string input){
     int i = 0;
@@ -61,7 +58,23 @@ string readName (string input){
     for(int i = 0; i<input.length(); i++){
         if(input[i] == ' '){
             //cout<<input.substr(i, input.length());
-            return input.substr(i, input.length());
+            return input.substr(i+1, input.length());
+        }
+    }
+}
+void printTree(Node * Current, string level){
+    if(Current->myName == "/"){
+        cout<<Current->myName<<"\n";
+    }
+    level.append(" ");
+    if(Current -> children.size() == 0){
+        return;
+    }
+    else{
+        for(int i = 0; i < Current->children.size(); i++){
+        cout<<level<<Current->children[i].myName<<"\n";
+        Node * child = &Current->children[i];
+        printTree(child,level);
         }
     }
 }
@@ -69,11 +82,15 @@ string readName (string input){
 int main()
 {   
     vector<string> lines;
-    ifstream contents("input2.txt");
+    ifstream contents("input.txt");
     for (string line; getline(contents, line);){
         lines.push_back(line);
     }
-    node *parentNode = newNode(0, "/");
+    Node firstNode;
+    firstNode.myName = "/";
+    firstNode.myValue = 0;
+    Node *currentNode = &firstNode;
+    
     for(int i = 0; i<lines.size(); i++){
         string line = lines[i];
         if(line == "$ ls"){
@@ -81,9 +98,11 @@ int main()
             line = lines[i];
             while(line[2] !='c' && line[3] !='d' && i<lines.size()){
                 //cout<<line<<"\n";
-                node *child = newNode(readInt(line), readName(line));
-                child->parent = parentNode;
-                parentNode->children.push_back(*child);
+                Node child;
+                child.myValue = readInt(line);
+                child.myName = readName(line);
+                child.parent = currentNode;
+                currentNode->children.push_back(child);
                 i++;
                 line = lines[i];
                
@@ -92,27 +111,28 @@ int main()
         string directory;
         if(line[2] == 'c' && line[3]== 'd'){
         directory = line.substr(5, line.size());
-        }
-        if(directory == ".." && parentNode -> myName != "/"){
-            parentNode = parentNode->parent;
+        
+        if(directory == ".." && currentNode->myName != "/"){
+            currentNode = currentNode->parent;
         }
         else{
-            for(int j = 0; j<parentNode->children.size(); j++){
-                if(directory == parentNode->children[j].myName){
-                  *parentNode = parentNode->children[j];
+            for(int j = 0; j<currentNode->children.size(); j++){
+                if(directory == currentNode->children[j].myName){
+                  currentNode = &currentNode->children[j];
                 }
             }
+
         }
-    }
-    /*
-    while(parentNode->myName != "/"){
-        parentNode = parentNode -> parent;
-    }
-    */
-    //cout<<parentNode->myName;
-    for(int i = 0; i<parentNode->children.size(); i++){
-    cout<<parentNode->children[i].myName;
-    }
+
+        }
+        
+
     
+
+    }
+    while(currentNode -> myName != "/"){
+        currentNode = currentNode->parent;
+    }
+    printTree(currentNode, "");
 
 }
