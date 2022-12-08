@@ -26,11 +26,11 @@ using namespace std;
     - d.ext (file, size=5626152)
     - k (file, size=7214296)
 */
-
+int totalSum= 0;
 
 class Node{
     public: 
-        int myValue;
+        int mySize;
         string myName;
         Node *parent;
         vector<Node> children;
@@ -61,34 +61,66 @@ string readName (string input){
             return input.substr(i+1, input.length());
         }
     }
+    return " ";
 }
-void printTree(Node * Current, string level){
-    if(Current->myName == "/"){
-        cout<<Current->myName<<"\n";
+void printTree(Node * current, string level){
+    if(current->myName == "/"){
+        cout<<current->myName<<" ("<<current->mySize<<") \n";
     }
     level.append(" ");
-    if(Current -> children.size() == 0){
+    if(current -> children.size() == 0){
         return;
     }
     else{
-        for(int i = 0; i < Current->children.size(); i++){
-        cout<<level<<Current->children[i].myName<<"\n";
-        Node * child = &Current->children[i];
+        for(int i = 0; i < current->children.size(); i++){
+        cout<<level<<current->children[i].myName<<" size( "<<current->children[i].mySize<<" )\n";
+        Node * child = &current->children[i];
         printTree(child,level);
         }
+    }
+    return;
+}
+
+void calculateSize(Node * current){
+    
+    if(current -> children.size() == 0){
+        return;
+    }
+    else{
+        for(int i = 0; i < current->children.size(); i++){
+        Node * child = &current->children[i];
+        calculateSize(child);
+        current->mySize += current->children[i].mySize; 
+        }
+    }
+    return;
+}
+
+void numberOf(Node * current, int limit){
+    if(current -> children.size() == 0){
+        return;
+    }
+    if(current->mySize <= limit){
+           totalSum += current->mySize;
+        }
+    else{
+        for(int i = 0; i < current->children.size(); i++){
+        Node * child = &current->children[i];
+        numberOf(child, limit);
+        }    
     }
 }
 
 int main()
 {   
     vector<string> lines;
-    ifstream contents("input.txt");
+    ifstream contents("input2.txt");
     for (string line; getline(contents, line);){
         lines.push_back(line);
     }
     Node firstNode;
     firstNode.myName = "/";
-    firstNode.myValue = 0;
+    firstNode.mySize = 0;
     Node *currentNode = &firstNode;
     
     for(int i = 0; i<lines.size(); i++){
@@ -99,7 +131,7 @@ int main()
             while(line[2] !='c' && line[3] !='d' && i<lines.size()){
                 //cout<<line<<"\n";
                 Node child;
-                child.myValue = readInt(line);
+                child.mySize = readInt(line);
                 child.myName = readName(line);
                 child.parent = currentNode;
                 currentNode->children.push_back(child);
@@ -133,6 +165,8 @@ int main()
     while(currentNode -> myName != "/"){
         currentNode = currentNode->parent;
     }
-    printTree(currentNode, "");
-
+    calculateSize(currentNode);
+    //printTree(currentNode, "");
+    numberOf(currentNode, 100000);
+    cout<<totalSum;
 }
