@@ -73,7 +73,7 @@ void printTree(Node * current, string level){
     }
     else{
         for(int i = 0; i < current->children.size(); i++){
-        cout<<level<<current->children[i].myName<<" size( "<<current->children[i].mySize<<" )\n";
+        cout<<level<<current->children[i].myName<<" ("<<current->children[i].mySize<<") kb\n";
         Node * child = &current->children[i];
         printTree(child,level);
         }
@@ -100,10 +100,12 @@ void numberOf(Node * current, int limit){
     if(current -> children.size() == 0){
         return;
     }
+   
     if(current->mySize <= limit){
+           cout<<current->mySize<<"\n";
            totalSum += current->mySize;
         }
-    else{
+    {
         for(int i = 0; i < current->children.size(); i++){
         Node * child = &current->children[i];
         numberOf(child, limit);
@@ -168,5 +170,5 @@ int main()
     calculateSize(currentNode);
     //printTree(currentNode, "");
     numberOf(currentNode, 100000);
-    cout<<totalSum;
+    //cout<<totalSum;
 }
