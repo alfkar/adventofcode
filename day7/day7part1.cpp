@@ -8,8 +8,6 @@
 
 using namespace std;
 
-#define signalLength 4
-
 /*
 - / (dir)
   - a (dir)
@@ -26,7 +24,7 @@ using namespace std;
     - d.ext (file, size=5626152)
     - k (file, size=7214296)
 */
-int totalSum= 0;
+int totalSum = 0;
 
 class Node{
     public: 
